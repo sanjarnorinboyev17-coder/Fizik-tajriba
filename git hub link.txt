@@ -1,3 +1,6 @@
 GitHub link: hali joylanmadi
 
-Sabab: bu kompyuterda GitHub CLI (gh), git remote yoki GitHub credential topilmadi. Link qo'yish uchun GitHub token/login kerak.
+Sabab: bu kompyuterda GitHub CLI (gh), git remote, GH_TOKEN/GITHUB_TOKEN yoki GitHub credential topilmadi.
+
+Loyiha lokal git repository qilib tayyorlandi va commit qilindi.
+GitHub link qo'yish uchun GitHub login yoki token kerak.
