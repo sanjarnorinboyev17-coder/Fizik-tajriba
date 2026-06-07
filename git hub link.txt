@@ -1,0 +1,3 @@
+GitHub link: hali joylanmadi
+
+Sabab: bu kompyuterda GitHub CLI (gh), git remote yoki GitHub credential topilmadi. Link qo'yish uchun GitHub token/login kerak.
