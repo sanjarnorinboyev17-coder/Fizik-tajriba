@@ -47,13 +47,23 @@ jobs:
         run: |
           npm install --no-save @capacitor/cli @capacitor/android --silent
 
+      - name: Prepare web assets for Capacitor
+        run: |
+          mkdir -p www
+          cp -f index.html www/ || true
+          cp -f style.css www/ || true
+          cp -f package.json www/ || true
+          cp -f package-lock.json www/ || true
+          cp -f README.md www/ || true
+
       - name: Initialize Capacitor and add Android
         env:
           APP_ID: com.sanjarnorinboyev17.fizik
           APP_NAME: FizikTajriba
         run: |
-          npx cap init "$APP_NAME" "$APP_ID" --web-dir="." || true
+          npx cap init "$APP_NAME" "$APP_ID" --web-dir="www" || true
           npx cap add android || true
+          npx cap copy android || true
 
       - name: Build Android with Gradle wrapper
         run: |
