@@ -35,13 +35,9 @@ jobs:
           if [ -f ./gradlew ]; then chmod +x ./gradlew; fi
 
       - name: Build Debug APK
-        run: |
-          if [ -f ./gradlew ]; then
-            ./gradlew assembleDebug --no-daemon
-          else
-            echo "gradlew not found in repository. Please add the Gradle wrapper (recommended) or adjust this workflow.";
-            exit 1;
-          fi
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: assembleDebug
 
       - name: Upload debug APK artifact
         uses: actions/upload-artifact@v4
