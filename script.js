@@ -1580,3 +1580,16 @@ function animate() {
 }
 
 Object.assign(window, { loadExperiment, resetWires, adjustResistance });
+
+// Sahifa yuklanganda init() va animate() ni boshlash
+document.addEventListener('DOMContentLoaded', () => {
+  init();
+  animate();
+});
+
+// Agar script module bo'lsa to'g'ridan-to'g'ri chaqirish
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
