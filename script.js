@@ -1589,7 +1589,7 @@ function calculateCircuit() {
     if (complete) {
       setLampState('main', true, 0.7);
       setStatus('⚡ Kondensator zaryad bo\'lmoqda — lampa yumshoq yonadi', 'success');
-      setGuide('To'g'ri: kondensator zaryad bo\'lsa lampa tezda yonadi, so'ng xiralashadi.', 'success');
+      setGuide('To'g'ri: kondensator zaryad bo\'lsa lampa tezda yonadi, so'ng xiralashadi.','success');
       updateMeters(9, 0.5);
     } else {
       resetAllLamps();
