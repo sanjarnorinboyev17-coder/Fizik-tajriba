@@ -52,8 +52,8 @@ jobs:
           APP_ID: com.sanjarnorinboyev17.fizik
           APP_NAME: FizikTajriba
         run: |
-          npx cap init "$APP_ID" "$APP_NAME" --web-dir="." || true
-          npx cap add android --npm-client=npm || true
+          npx cap init "$APP_NAME" "$APP_ID" --web-dir="." || true
+          npx cap add android || true
 
       - name: Build Android with Gradle wrapper
         run: |
