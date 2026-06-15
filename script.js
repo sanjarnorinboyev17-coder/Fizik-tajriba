@@ -32,7 +32,12 @@ const EXPERIMENT_NAMES = {
   motor: 'Motor',
   series: 'Ketma-ket',
   'dual-battery': '2 batareya',
-  rheostat: 'Reostat'
+  rheostat: 'Reostat',
+  capacitor: 'Kondensator',
+  inductor: 'Induktor',
+  diode: 'Diod',
+  transformer: 'Transformer',
+  solar: 'Quyosh paneli'
 };
 
 // Colors
@@ -849,9 +854,164 @@ function spawnElectrolysis(x, z) {
   return g;
 }
 
-// =============================================
-// WIRE GEOMETRY
-// =============================================
+function spawnCapacitor(x, z) {
+  const g = new THREE.Group();
+  g.position.set(x, 0.15, z);
+
+  const plate1 = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.04, 0.5), MAT.metal());
+  plate1.position.set(-0.22, 0.1, 0);
+  plate1.castShadow = true;
+  g.add(plate1);
+
+  const plate2 = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.04, 0.5), MAT.metal());
+  plate2.position.set(0.22, 0.1, 0);
+  plate2.castShadow = true;
+  g.add(plate2);
+
+  const separator = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.08, 0.55), new THREE.MeshStandardMaterial({ color: 0xff8c00 }));
+  separator.position.set(0, 0.08, 0);
+  g.add(separator);
+
+  const lbl = makeLabel('C');
+  lbl.position.set(0, 0.22, 0); lbl.rotation.x = -Math.PI / 2;
+  g.add(lbl);
+
+  createTerminal('cap_in', g, -0.75, 0.16, 0);
+  createTerminal('cap_out', g, 0.75, 0.16, 0);
+
+  scene.add(g); devices.push(g);
+  return g;
+}
+
+function spawnInductor(x, z) {
+  const g = new THREE.Group();
+  g.position.set(x, 0.15, z);
+
+  for (let i = 0; i < 5; i++) {
+    const coil = new THREE.Mesh(
+      new THREE.TorusGeometry(0.2, 0.04, 8, 20),
+      MAT.copper()
+    );
+    coil.rotation.x = Math.PI / 2;
+    coil.position.x = -0.35 + i * 0.18;
+    coil.castShadow = true;
+    g.add(coil);
+  }
+
+  const lbl = makeLabel('L');
+  lbl.position.set(0, 0.22, 0); lbl.rotation.x = -Math.PI / 2;
+  g.add(lbl);
+
+  createTerminal('ind_in', g, -0.75, 0.16, 0);
+  createTerminal('ind_out', g, 0.75, 0.16, 0);
+
+  scene.add(g); devices.push(g);
+  return g;
+}
+
+function spawnDiode(x, z) {
+  const g = new THREE.Group();
+  g.position.set(x, 0.12, z);
+
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.7, 20), MAT.rubber());
+  body.castShadow = true;
+  g.add(body);
+
+  const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.7, 0.05), new THREE.MeshStandardMaterial({ color: 0x111827 }));
+  stripe.position.z = 0.08;
+  g.add(stripe);
+
+  const lead1 = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.5, 8), MAT.metal());
+  lead1.rotation.z = Math.PI / 2;
+  lead1.position.set(-0.5, 0, 0);
+  g.add(lead1);
+
+  const lead2 = lead1.clone();
+  lead2.position.x = 0.5;
+  g.add(lead2);
+
+  const lbl = makeLabel('D');
+  lbl.position.set(0, 0.22, 0); lbl.rotation.x = -Math.PI / 2;
+  g.add(lbl);
+
+  createTerminal('diod_p', g, -0.65, 0.12, 0);
+  createTerminal('diod_n', g, 0.65, 0.12, 0);
+
+  scene.add(g); devices.push(g);
+  return g;
+}
+
+function spawnTransformer(x, z) {
+  const g = new THREE.Group();
+  g.position.set(x, 0.18, z);
+
+  const core = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.8, 0.35), MAT.metal());
+  core.castShadow = true;
+  g.add(core);
+
+  [-0.4, 0.4].forEach(xp => {
+    for (let i = 0; i < 6; i++) {
+      const coil = new THREE.Mesh(
+        new THREE.TorusGeometry(0.15, 0.025, 8, 16),
+        MAT.copper()
+      );
+      coil.rotation.x = Math.PI / 2;
+      coil.position.set(xp, -0.3 + i * 0.16, 0);
+      coil.castShadow = true;
+      g.add(coil);
+    }
+  });
+
+  const lbl = makeLabel('T');
+  lbl.position.set(0, 0.22, 0); lbl.rotation.x = -Math.PI / 2;
+  g.add(lbl);
+
+  createTerminal('trf_in1', g, -0.65, 0.12, -0.2);
+  createTerminal('trf_in2', g, -0.65, 0.12, 0.2);
+  createTerminal('trf_out1', g, 0.65, 0.12, -0.2);
+  createTerminal('trf_out2', g, 0.65, 0.12, 0.2);
+
+  scene.add(g); devices.push(g);
+  return g;
+}
+
+function spawnSolarPanel(x, z) {
+  const g = new THREE.Group();
+  g.position.set(x, 0.2, z);
+
+  const panel = new THREE.Mesh(
+    new THREE.BoxGeometry(1.8, 0.8, 0.05),
+    new THREE.MeshStandardMaterial({ color: 0x1e40af, roughness: 0.3, metalness: 0.1 })
+  );
+  panel.castShadow = true;
+  panel.receiveShadow = true;
+  g.add(panel);
+
+  for (let i = 0; i < 6; i++) {
+    for (let j = 0; j < 4; j++) {
+      const cell = new THREE.Mesh(
+        new THREE.BoxGeometry(0.25, 0.15, 0.02),
+        new THREE.MeshStandardMaterial({ color: 0x0ea5e9, emissive: 0x06b6d4, emissiveIntensity: 0.3 })
+      );
+      cell.position.set(-0.7 + i * 0.3, 0.25 - j * 0.22, 0.04);
+      g.add(cell);
+    }
+  }
+
+  const frame = new THREE.Mesh(new THREE.BoxGeometry(1.85, 0.85, 0.08), MAT.metal());
+  frame.position.z = -0.02;
+  g.add(frame);
+
+  const lbl = makeLabel('☀️');
+  lbl.position.set(0, 0.5, 0); lbl.rotation.x = -Math.PI / 2;
+  g.add(lbl);
+
+  createTerminal('sol_p', g, -0.9, 0.12, 0);
+  createTerminal('sol_n', g, 0.9, 0.12, 0);
+
+  scene.add(g); devices.push(g);
+  return g;
+}
 function buildWireGeo(p1, p2) {
   const dist = p1.distanceTo(p2);
   // Arc height: minimum so it's always visible, proportional to distance
@@ -959,6 +1119,40 @@ function loadExperiment(type) {
     updateResistanceReadout();
     setStatus('Reostat bilan lampochka yorqinligini boshqaring', 'info');
     setGuide('Sxema: Bat(+) → Rezistor IN, Rezistor OUT → Lampa IN, Lampa OUT → Bat(-). R qiymatini o‘zgartirib yorqinlikni kuzating.');
+  }
+  else if (type === 'capacitor') {
+    spawnBattery(-3, 0);
+    spawnCapacitor(0, 0);
+    spawnLamp(3, 0);
+    setStatus('Kondensatorga tok qo\'yish va chiqitish', 'info');
+    setGuide('Sxema: Bat(+) → Kondensator → Lampa → Bat(-). Kondensator yumshoq yonadi, faqat qo\'yish vaqtida.');
+  }
+  else if (type === 'inductor') {
+    spawnBattery(-3, 0);
+    spawnInductor(0, 0);
+    spawnLamp(3, 0);
+    setStatus('Induktor magnit tuyuligini ko\'rsatadi', 'info');
+    setGuide('Sxema: Bat(+) → Induktor → Lampa → Bat(-). Induktor tok o\'zgarishiga qarshilik qiladi.');
+  }
+  else if (type === 'diode') {
+    spawnBattery(-3, 0);
+    spawnDiode(0, 0);
+    spawnLamp(3, 0);
+    setStatus('Diod bir tomonga tokni beradi', 'info');
+    setGuide('Sxema: Bat(+) → Diod(+) → Lampa → Bat(-). Diod teskari bo\'lsa lampa yonmaydi.');
+  }
+  else if (type === 'transformer') {
+    spawnBattery(-3, 0);
+    spawnTransformer(0, 0);
+    spawnLamp(3, 0);
+    setStatus('Transformer kuchlanishni o\'zgartiradi', 'info');
+    setGuide('Sxema: Bat(+) → Transformer IN → OUT → Lampa → Bat(-). Trafo spiralelari soni nisbati kuchlanishni o\'zgartiradi.');
+  }
+  else if (type === 'solar') {
+    spawnSolarPanel(-2, 0);
+    spawnLamp(2, 0);
+    setStatus('Quyosh paneli nurdan elektr hosil qiladi', 'info');
+    setGuide('Sxema: Quyosh paneli → Lampa. Panelni kameranis yordamida buringuz va nur o\'zgarishini kuzating.');
   }
 }
 
@@ -1388,6 +1582,74 @@ function calculateCircuit() {
       resetAllLamps();
       setStatus('Reostat va lampochkani ketma-ket ulang.', hasAnyConnection('bat_plus') ? 'warning' : 'info');
       setGuide('Sxema: Bat(+) → Rezistor → Lampa → Bat(-). R tugmalari faqat zanjir to‘g‘ri ulanganda natija beradi.', hasAnyConnection('bat_plus') ? 'danger' : '');
+      updateMeters(0, 0);
+    }
+  } else if (currentMode === 'capacitor') {
+    const complete = connected('bat_plus', 'cap_in') && connected('cap_out', 'lamp_in') && connected('lamp_out', 'bat_minus');
+    if (complete) {
+      setLampState('main', true, 0.7);
+      setStatus('⚡ Kondensator zaryad bo\'lmoqda — lampa yumshoq yonadi', 'success');
+      setGuide('To'g'ri: kondensator zaryad bo\'lsa lampa tezda yonadi, so'ng xiralashadi.', 'success');
+      updateMeters(9, 0.5);
+    } else {
+      resetAllLamps();
+      setStatus('Kondensatorni lampoga ulang.', hasAnyConnection('bat_plus') ? 'warning' : 'info');
+      updateMeters(0, 0);
+    }
+  } else if (currentMode === 'inductor') {
+    const complete = connected('bat_plus', 'ind_in') && connected('ind_out', 'lamp_in') && connected('lamp_out', 'bat_minus');
+    if (complete) {
+      setLampState('main', true, 0.8);
+      setStatus('🌀 Induktor magnit tuyuligini yaratadi — tok o\'zgarishiga qarshilik', 'success');
+      setGuide('To'g'ri: induktor tok o\'zgarishiga qarshilik qiladi, magnit maydoni hosil qiladi.', 'success');
+      updateMeters(9, 0.55);
+    } else {
+      resetAllLamps();
+      setStatus('Induktorni lampoga ulang.', hasAnyConnection('bat_plus') ? 'warning' : 'info');
+      updateMeters(0, 0);
+    }
+  } else if (currentMode === 'diode') {
+    const correct = connected('bat_plus', 'diod_p') && connected('diod_n', 'lamp_in') && connected('lamp_out', 'bat_minus');
+    const reversed = connected('bat_plus', 'diod_n') && connected('diod_p', 'lamp_in') && connected('lamp_out', 'bat_minus');
+    
+    if (correct) {
+      setLampState('main', true, 1);
+      setStatus('▶️ Diod to'g'ri yo\'nalishdagi tok beradi — lampa yonadi', 'success');
+      setGuide('To'g'ri: diod faqat anod(+) tomondan tok kirganda ishlaydi. Teskari ulsa yonmaydi.', 'success');
+      updateMeters(9, 0.7);
+    } else if (reversed) {
+      setLampState('main', false);
+      setStatus('❌ Diod teskari ulandi — tok o\'tmaydik', 'danger');
+      setGuide('Xato: Diod(+) batareyaning + tomoniga, Diod(-) lampaga qaytish kerak.', 'danger');
+      updateMeters(0, 0);
+    } else {
+      resetAllLamps();
+      setStatus('Diodni to'g'ri yo\'nalishdaga ulang.', hasAnyConnection('bat_plus') ? 'warning' : 'info');
+      updateMeters(0, 0);
+    }
+  } else if (currentMode === 'transformer') {
+    const complete = connected('bat_plus', 'trf_in1') && connected('trf_in2', 'bat_minus') && 
+                     connected('trf_out1', 'lamp_in') && connected('lamp_out', 'trf_out2');
+    if (complete) {
+      setLampState('main', true, 0.9);
+      setStatus('🔌 Transformer — primer va sekunder o\'yin', 'success');
+      setGuide('To'g'ri: trafo primer (kirish) va sekunder (chiqish) spiralelari kuchlanishni o\'zgartiradi.', 'success');
+      updateMeters(9, 0.6);
+    } else {
+      resetAllLamps();
+      setStatus('Transformerni to'g'ri ulang.', hasAnyConnection('bat_plus') ? 'warning' : 'info');
+      updateMeters(0, 0);
+    }
+  } else if (currentMode === 'solar') {
+    const complete = connected('sol_p', 'lamp_in') && connected('lamp_out', 'sol_n');
+    if (complete) {
+      setLampState('main', true, 0.6);
+      setStatus('☀️ Quyosh paneli nur energiyasini elektr energiyaga aylantiryapti', 'success');
+      setGuide('To'g'ri: quyosh paneli fotonelarni elektron-teshik juftliklarinya aylantirib tok hosil qiladi.', 'success');
+      updateMeters(5, 0.3);
+    } else {
+      resetAllLamps();
+      setStatus('Quyosh panelini lampoga ulang.', hasAnyConnection('sol_p') ? 'warning' : 'info');
       updateMeters(0, 0);
     }
   }
