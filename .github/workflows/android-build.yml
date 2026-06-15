@@ -10,6 +10,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      GRADLE_USER_HOME: ${{ runner.temp }}/.gradle
+      ORG_GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx2048m
 
     steps:
       - name: Checkout
