@@ -34,11 +34,18 @@ jobs:
         run: |
           if [ -f ./gradlew ]; then chmod +x ./gradlew; fi
 
+      - name: Install Gradle (system)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gradle
+
       - name: Build Debug APK
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: assembleDebug
-          gradle-version: '7.6.1'
+        run: |
+          if [ -f ./gradlew ]; then
+            ./gradlew assembleDebug --no-daemon
+          else
+            gradle assembleDebug --no-daemon
+          fi
 
       - name: Upload debug APK artifact
         uses: actions/upload-artifact@v4
