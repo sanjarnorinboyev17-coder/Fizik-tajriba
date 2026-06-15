@@ -1,5 +1,4 @@
-import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+// THREE va OrbitControls global o'zgaruvchilar sifatida mavjud (CDN dan yuklandi)
 
 let scene, camera, renderer, controls;
 let devices = [], wires = [], terminals = [], sparkParticles = [], bubbleParticles = [];
