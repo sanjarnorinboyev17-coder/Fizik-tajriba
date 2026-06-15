@@ -95,7 +95,7 @@ function init() {
   document.body.appendChild(renderer.domElement);
 
   // Orbit — left drag rotates
-  controls = new OrbitControls(camera, renderer.domElement);
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.08;
   controls.maxPolarAngle = Math.PI / 2 - 0.04;
