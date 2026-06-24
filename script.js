@@ -1202,6 +1202,94 @@ function setupEvents() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
+    clampDraggablePanels();
+  });
+  setupDraggablePanels();
+}
+
+const PANEL_POSITION_KEYS = {
+  ui: 'physics-lab-ui-position',
+  'voltage-panel': 'physics-lab-meter-position'
+};
+
+function setupDraggablePanels() {
+  ['ui', 'voltage-panel'].forEach(id => {
+    const panel = document.getElementById(id);
+    const handle = panel?.querySelector('[data-drag-handle]');
+    if (!panel || !handle) return;
+
+    restorePanelPosition(panel);
+    let drag = null;
+
+    handle.addEventListener('pointerdown', event => {
+      if (event.button !== undefined && event.button !== 0) return;
+      const rect = panel.getBoundingClientRect();
+      drag = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+      handle.setPointerCapture(event.pointerId);
+      panel.classList.add('is-dragging');
+      event.preventDefault();
+    });
+
+    handle.addEventListener('pointermove', event => {
+      if (!drag) return;
+      movePanel(panel, event.clientX - drag.x, event.clientY - drag.y);
+    });
+
+    const finishDrag = event => {
+      if (!drag) return;
+      drag = null;
+      panel.classList.remove('is-dragging');
+      if (handle.hasPointerCapture(event.pointerId)) handle.releasePointerCapture(event.pointerId);
+      savePanelPosition(panel);
+    };
+    handle.addEventListener('pointerup', finishDrag);
+    handle.addEventListener('pointercancel', finishDrag);
+    handle.addEventListener('dblclick', () => resetPanelPosition(panel));
+  });
+}
+
+function movePanel(panel, left, top) {
+  const rect = panel.getBoundingClientRect();
+  const margin = 8;
+  const maxLeft = Math.max(margin, window.innerWidth - rect.width - margin);
+  const maxTop = Math.max(margin, window.innerHeight - rect.height - margin);
+  panel.style.left = `${Math.min(Math.max(margin, left), maxLeft)}px`;
+  panel.style.top = `${Math.min(Math.max(margin, top), maxTop)}px`;
+  panel.style.right = 'auto';
+  panel.style.bottom = 'auto';
+}
+
+function savePanelPosition(panel) {
+  const key = PANEL_POSITION_KEYS[panel.id];
+  if (!key) return;
+  localStorage.setItem(key, JSON.stringify({ left: panel.style.left, top: panel.style.top }));
+}
+
+function restorePanelPosition(panel) {
+  const key = PANEL_POSITION_KEYS[panel.id];
+  const saved = key && localStorage.getItem(key);
+  if (!saved) return;
+  try {
+    const { left, top } = JSON.parse(saved);
+    if (left && top) movePanel(panel, parseFloat(left), parseFloat(top));
+  } catch (_) {
+    localStorage.removeItem(key);
+  }
+}
+
+function resetPanelPosition(panel) {
+  const key = PANEL_POSITION_KEYS[panel.id];
+  if (key) localStorage.removeItem(key);
+  panel.style.left = '';
+  panel.style.top = '';
+  panel.style.right = '';
+  panel.style.bottom = '';
+}
+
+function clampDraggablePanels() {
+  ['ui', 'voltage-panel'].forEach(id => {
+    const panel = document.getElementById(id);
+    if (panel?.style.left && panel.style.top) movePanel(panel, parseFloat(panel.style.left), parseFloat(panel.style.top));
   });
 }
 

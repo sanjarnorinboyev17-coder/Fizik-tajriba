@@ -30,6 +30,12 @@ canvas { display: block; touch-action: none; }
   color: #0f172a; margin: 0 0 10px 0;
   display: flex; align-items: center; justify-content: space-between; gap: 8px;
 }
+.drag-handle {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.drag-handle:active { cursor: grabbing; }
 .panel-title-main {
   display: flex;
   align-items: center;
@@ -183,6 +189,17 @@ canvas { display: block; touch-action: none; }
   padding: 14px 16px;
   width: 180px; z-index: 10;
 }
+.meter-panel-title {
+  align-items: center;
+  color: #0f172a;
+  display: flex;
+  font-size: 12px;
+  font-weight: 800;
+  justify-content: space-between;
+  letter-spacing: 0.01em;
+  margin: -2px 0 12px;
+}
+.drag-icon { color: #94a3b8; font-size: 18px; line-height: 1; }
 .meter-label { font-size: 11px; color: #64748b; margin: 0 0 4px 0; }
 .meter-val { font-size: 22px; font-weight: 700; color: #0f172a; margin: 0; }
 .meter-unit { font-size: 12px; color: #94a3b8; }
@@ -216,6 +233,7 @@ canvas { display: block; touch-action: none; }
     width: 142px;
     padding: 9px 10px;
   }
+  .meter-panel-title { margin-bottom: 8px; }
   .meter-val { font-size: 18px; }
   .meter-label { font-size: 10px; }
   #hint {

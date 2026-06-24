@@ -10,7 +10,7 @@
 
 <div id="ui">
   <div class="panel experiment-panel">
-    <div class="panel-title">
+    <div class="panel-title drag-handle" data-drag-handle title="Panelni joyini o'zgartirish uchun torting">
       <span class="panel-title-main">⚡ Elektr Laboratoriyasi</span>
       <span class="active-experiment" id="active-experiment">Lampochka</span>
     </div>
@@ -31,6 +31,7 @@
       <button class="btn-exp" id="btn-diode" onclick="loadExperiment('diode')"><span class="btn-icon">▶️</span><span class="btn-label">Diod</span></button>
       <button class="btn-exp" id="btn-transformer" onclick="loadExperiment('transformer')"><span class="btn-icon">🔌</span><span class="btn-label">Transformer</span></button>
       <button class="btn-exp" id="btn-solar" onclick="loadExperiment('solar')"><span class="btn-icon">☀️</span><span class="btn-label">Quyosh paneli</span></button>
+    </div>
 
     <div id="ohm-controls" style="display:none">
       <div class="inline-actions">
@@ -56,6 +57,10 @@
 </div>
 
 <div id="voltage-panel">
+  <div class="meter-panel-title drag-handle" data-drag-handle title="Panelni joyini o'zgartirish uchun torting">
+    <span>Ko'rsatkichlar</span>
+    <span class="drag-icon" aria-hidden="true">⠿</span>
+  </div>
   <div class="meter-label">Kuchlanish</div>
   <div class="meter-val" id="volt-val">0.0 <span class="meter-unit">V</span></div>
   <div class="meter-bar"><div class="meter-fill" id="volt-bar" style="width:0%;background:#3b82f6"></div></div>
