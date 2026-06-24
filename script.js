@@ -1589,7 +1589,7 @@ function calculateCircuit() {
     if (complete) {
       setLampState('main', true, 0.7);
       setStatus('⚡ Kondensator zaryad bo\'lmoqda — lampa yumshoq yonadi', 'success');
-      setGuide('To'g'ri: kondensator zaryad bo\'lsa lampa tezda yonadi, so'ng xiralashadi.','success');
+      setGuide(`To'g'ri: kondensator zaryad bo'lsa lampa tezda yonadi, so'ng xiralashadi.`, 'success');
       updateMeters(9, 0.5);
     } else {
       resetAllLamps();
@@ -1601,7 +1601,7 @@ function calculateCircuit() {
     if (complete) {
       setLampState('main', true, 0.8);
       setStatus('🌀 Induktor magnit tuyuligini yaratadi — tok o\'zgarishiga qarshilik', 'success');
-      setGuide('To'g'ri: induktor tok o\'zgarishiga qarshilik qiladi, magnit maydoni hosil qiladi.', 'success');
+      setGuide(`To'g'ri: induktor tok o'zgarishiga qarshilik qiladi, magnit maydoni hosil qiladi.`, 'success');
       updateMeters(9, 0.55);
     } else {
       resetAllLamps();
@@ -1614,17 +1614,17 @@ function calculateCircuit() {
     
     if (correct) {
       setLampState('main', true, 1);
-      setStatus('▶️ Diod to'g'ri yo\'nalishdagi tok beradi — lampa yonadi', 'success');
-      setGuide('To'g'ri: diod faqat anod(+) tomondan tok kirganda ishlaydi. Teskari ulsa yonmaydi.', 'success');
+      setStatus(`▶️ Diod to'g'ri yo'nalishdagi tok beradi — lampa yonadi`, 'success');
+      setGuide(`To'g'ri: diod faqat anod(+) tomondan tok kirganda ishlaydi. Teskari ulsa yonmaydi.`, 'success');
       updateMeters(9, 0.7);
     } else if (reversed) {
       setLampState('main', false);
-      setStatus('❌ Diod teskari ulandi — tok o\'tmaydik', 'danger');
+      setStatus(`❌ Diod teskari ulandi — tok o'tmaydik`, 'danger');
       setGuide('Xato: Diod(+) batareyaning + tomoniga, Diod(-) lampaga qaytish kerak.', 'danger');
       updateMeters(0, 0);
     } else {
       resetAllLamps();
-      setStatus('Diodni to'g'ri yo\'nalishdaga ulang.', hasAnyConnection('bat_plus') ? 'warning' : 'info');
+      setStatus(`Diodni to'g'ri yo'nalishdaga ulang.`, hasAnyConnection('bat_plus') ? 'warning' : 'info');
       updateMeters(0, 0);
     }
   } else if (currentMode === 'transformer') {
@@ -1633,11 +1633,11 @@ function calculateCircuit() {
     if (complete) {
       setLampState('main', true, 0.9);
       setStatus('🔌 Transformer — primer va sekunder o\'yin', 'success');
-      setGuide('To'g'ri: trafo primer (kirish) va sekunder (chiqish) spiralelari kuchlanishni o\'zgartiradi.', 'success');
+      setGuide(`To'g'ri: trafo primer (kirish) va sekunder (chiqish) spiralelari kuchlanishni o'zgartiradi.`, 'success');
       updateMeters(9, 0.6);
     } else {
       resetAllLamps();
-      setStatus('Transformerni to'g'ri ulang.', hasAnyConnection('bat_plus') ? 'warning' : 'info');
+      setStatus(`Transformerni to'g'ri ulang.`, hasAnyConnection('bat_plus') ? 'warning' : 'info');
       updateMeters(0, 0);
     }
   } else if (currentMode === 'solar') {
@@ -1645,7 +1645,7 @@ function calculateCircuit() {
     if (complete) {
       setLampState('main', true, 0.6);
       setStatus('☀️ Quyosh paneli nur energiyasini elektr energiyaga aylantiryapti', 'success');
-      setGuide('To'g'ri: quyosh paneli fotonelarni elektron-teshik juftliklarinya aylantirib tok hosil qiladi.', 'success');
+      setGuide(`To'g'ri: quyosh paneli fotonelarni elektron-teshik juftliklarinya aylantirib tok hosil qiladi.`, 'success');
       updateMeters(5, 0.3);
     } else {
       resetAllLamps();
